@@ -22,7 +22,8 @@
     ]
   },
   "mixins": [
-    "deluge.mixins.json"
+    "deluge.mixins.json",
+    "deluge.fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.16.13",

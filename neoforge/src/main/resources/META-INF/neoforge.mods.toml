@@ -36,3 +36,5 @@ side = "BOTH"
 
 [[mixins]]
 config = "deluge.mixins.json"
+[[mixins]]
+config = "deluge.neoforge.mixins.json"
