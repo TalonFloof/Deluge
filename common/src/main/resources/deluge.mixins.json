@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "sh.talonfloof.deluge.mixins",
+  "compatibilityLevel": "JAVA_21",
+  "minVersion": "0.8",
+  "client": [
+    "client.FogRendererMixin",
+    "client.LevelRendererMixin",
+    "client.RenderPipelinesMixin",
+    "client.SkyRendererMixin"
+  ],
+  "mixins": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

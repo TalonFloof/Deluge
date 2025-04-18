@@ -1,0 +1,38 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+#issueTrackerURL = ""
+license = "GNU LGPL 3.0"
+
+[[mods]]
+modId = "deluge"
+version = "${version}"
+displayName = "Deluge"
+authors = ""
+description = '''
+A new kind of weather mod
+'''
+#logoFile = ""
+
+[[dependencies.deluge]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.deluge]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21.5,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.deluge]]
+modId = "architectury"
+type = "required"
+versionRange = "[16.1.4,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[mixins]]
+config = "deluge.mixins.json"
