@@ -1,22 +1,25 @@
 package sh.talonfloof.deluge.client;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import sh.talonfloof.deluge.DelugeEventType;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import static sh.talonfloof.deluge.Deluge.LOG;
 
 public class DelugeIrisCompat {
+    private static Class<?> api;
+    private static Object apiInstance;
+    private static MethodHandle isShaderPackInUse;
+
     static {
         try {
-            Class<?> api = Class.forName("net.irisshaders.iris.api.v0.IrisApi");
+            api = Class.forName("net.irisshaders.iris.api.v0.IrisApi");
             var programEnum = Class.forName("net.irisshaders.iris.api.v0.IrisProgram");
-            var apiInstance = api.cast(api.getDeclaredMethod("getInstance").invoke(null));
+            apiInstance = api.cast(api.getDeclaredMethod("getInstance").invoke(null));
+            isShaderPackInUse = MethodHandles.lookup().findVirtual(api, "isShaderPackInUse", MethodType.methodType(boolean.class));
             var handle = MethodHandles.lookup().findVirtual(api, "assignPipeline", MethodType.methodType(void.class, List.of(RenderPipeline.class, programEnum)));
             var pipelineHandle = ((MethodHandle)MethodHandles.lookup().findStatic(programEnum, "valueOf", MethodType.methodType(programEnum,String.class)));
             handle.invoke(apiInstance,DelugeRenderPipelines.SKY_DETAILS,pipelineHandle.invoke("SKY_TEXTURED"));
@@ -28,5 +31,15 @@ public class DelugeIrisCompat {
 
     public static void init() {
 
+    }
+
+    public static boolean isShaderEnabled() {
+        if (isShaderPackInUse == null)
+            return false;
+        try {
+            return (Boolean)isShaderPackInUse.invoke(apiInstance);
+        } catch(Throwable e) {
+            throw new RuntimeException(e);
+        }
     }
 }

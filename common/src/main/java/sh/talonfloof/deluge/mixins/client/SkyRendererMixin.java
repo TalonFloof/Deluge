@@ -20,7 +20,10 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import sh.talonfloof.deluge.Deluge;
 import sh.talonfloof.deluge.DelugeEventType;
 import sh.talonfloof.deluge.client.DelugeClient;
+import sh.talonfloof.deluge.client.DelugeIrisCompat;
 import sh.talonfloof.deluge.client.DelugeRenderTypes;
+
+import static sh.talonfloof.deluge.client.DelugeClient.clientConfig;
 
 @Mixin(SkyRenderer.class)
 public class SkyRendererMixin {
@@ -35,6 +38,13 @@ public class SkyRendererMixin {
         if(texture != null) {
             var mc = Minecraft.getInstance();
             var cloudColor = mc.level.getCloudColor(0);
+            var cloudVec4 = new Vector4f(ARGB.vector3fFromRGB24(cloudColor),ARGB.alphaFloat(cloudColor));
+            if(DelugeIrisCompat.isShaderEnabled() && clientConfig.iris.irisDarkenClouds) {
+                if(DelugeClient.currentEvent.getFogColor() != null)
+                    cloudVec4 = cloudVec4.mul(0.5F, 0.5F, 0.5F, 1.0F);
+                else
+                    cloudVec4 = cloudVec4.mul(0.8F, 0.8F, 0.8F, 1.0F);
+            }
             var renderDistance = (Math.min(mc.options.getEffectiveRenderDistance(),16) * 16) * 2F;
             // 2 (+ -), 3 (- -), 6 (+ +), 7 (- +)
             poseStack.pushPose();
@@ -42,10 +52,10 @@ public class SkyRendererMixin {
             Matrix4f matrix = poseStack.last().pose();
             var type = DelugeRenderTypes.SKY_DETAILS.apply(texture);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
-            vertexConsumer.addVertex(matrix, -renderDistance, 100, -renderDistance).setUv(0.0F, 0.0F).setColor(cloudColor);
-            vertexConsumer.addVertex(matrix, renderDistance, 100, -renderDistance).setUv(1.0F, 0.0F).setColor(cloudColor);
-            vertexConsumer.addVertex(matrix, renderDistance, 100, renderDistance).setUv(1.0F, 1.0F).setColor(cloudColor);
-            vertexConsumer.addVertex(matrix, -renderDistance, 100, renderDistance).setUv(0.0F, 1.0F).setColor(cloudColor);
+            vertexConsumer.addVertex(matrix, -renderDistance, 100, -renderDistance).setUv(0.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
+            vertexConsumer.addVertex(matrix, renderDistance, 100, -renderDistance).setUv(1.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
+            vertexConsumer.addVertex(matrix, renderDistance, 100, renderDistance).setUv(1.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
+            vertexConsumer.addVertex(matrix, -renderDistance, 100, renderDistance).setUv(0.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
             poseStack.popPose();
             bufferSource.endBatch(type);
         }
