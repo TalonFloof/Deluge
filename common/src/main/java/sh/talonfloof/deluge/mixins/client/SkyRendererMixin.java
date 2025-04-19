@@ -7,10 +7,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.FogParameters;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.SkyRenderer;
+import net.minecraft.client.renderer.*;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.joml.Matrix4f;
@@ -33,24 +30,24 @@ public class SkyRendererMixin {
             ci.cancel();
     }
     @Inject(method = "renderSunMoonAndStars", at = @At("TAIL"))
-    public void deluge$skyRender(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float celestialRotation, int i, float celestialIntensity, float tickDelta, FogParameters fogParameters, CallbackInfo ci) {
+    private void deluge$skyRender(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float f, int i, float g, float h, FogParameters fogParameters, CallbackInfo ci) {
         var texture = DelugeClient.currentEvent.getTexture();
         if(texture != null) {
-            bufferSource.endBatch();
             var mc = Minecraft.getInstance();
-            var cloudColor = mc.level.getCloudColor(tickDelta);
-            var renderDistance = (mc.options.getEffectiveRenderDistance() * 16) * 2F;
+            var cloudColor = mc.level.getCloudColor(0);
+            var renderDistance = (Math.min(mc.options.getEffectiveRenderDistance(),16) * 16) * 2F;
             // 2 (+ -), 3 (- -), 6 (+ +), 7 (- +)
             poseStack.pushPose();
-            poseStack.mulPose(Axis.YP.rotationDegrees((float) mc.level.getGameTime() / 100));
+            poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 100));
             Matrix4f matrix = poseStack.last().pose();
-            VertexConsumer vertexConsumer = bufferSource.getBuffer(DelugeRenderTypes.SKY_DETAILS.apply(texture));
+            var type = DelugeRenderTypes.SKY_DETAILS.apply(texture);
+            VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
             vertexConsumer.addVertex(matrix, -renderDistance, 100, -renderDistance).setUv(0.0F, 0.0F).setColor(cloudColor);
             vertexConsumer.addVertex(matrix, renderDistance, 100, -renderDistance).setUv(1.0F, 0.0F).setColor(cloudColor);
             vertexConsumer.addVertex(matrix, renderDistance, 100, renderDistance).setUv(1.0F, 1.0F).setColor(cloudColor);
             vertexConsumer.addVertex(matrix, -renderDistance, 100, renderDistance).setUv(0.0F, 1.0F).setColor(cloudColor);
             poseStack.popPose();
-            bufferSource.endBatch();
+            bufferSource.endBatch(type);
         }
     }
 }

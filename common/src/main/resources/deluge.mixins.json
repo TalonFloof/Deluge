@@ -4,12 +4,13 @@
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [
+    "client.ClientLevelMixin",
     "client.FogRendererMixin",
     "client.LevelRendererMixin",
-    "client.RenderPipelinesMixin",
     "client.SkyRendererMixin"
   ],
   "mixins": [
+    "client.IrisCommonUniformsMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -1,7 +1,3 @@
-plugins {
-    id 'com.github.johnrengelman.shadow'
-}
-
 architectury {
     platformSetupLoomIde()
     fabric()
@@ -15,17 +11,17 @@ configurations {
     compileClasspath.extendsFrom common
     runtimeClasspath.extendsFrom common
     developmentFabric.extendsFrom common
-
-    // Files in this configuration will be bundled into your mod using the Shadow plugin.
-    // Don't use the `shadow` configuration from the plugin itself as it's meant for excluding files.
-    shadowBundle {
-        canBeResolved = true
-        canBeConsumed = false
-    }
 }
 
 loom {
     accessWidenerPath = project(":common").loom.accessWidenerPath
+}
+
+repositories {
+    maven {
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
+    }
 }
 
 dependencies {
@@ -34,9 +30,11 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
 
     modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
+    modImplementation "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
 
     common(project(path: ':common', configuration: 'namedElements')) { transitive false }
-    shadowBundle project(path: ':common', configuration: 'transformProductionFabric')
+
+    modLocalRuntime "me.fzzyhmstrs:fzzy_config:${rootProject.fzzy_config_version}+${rootProject.minecraft_version}"
 }
 
 processResources {
@@ -45,13 +43,4 @@ processResources {
     filesMatching('fabric.mod.json') {
         expand version: project.version
     }
-}
-
-shadowJar {
-    configurations = [project.configurations.shadowBundle]
-    archiveClassifier = 'dev-shadow'
-}
-
-remapJar {
-    input.set shadowJar.archiveFile
 }
