@@ -1,45 +1,50 @@
-architectury {
-    platformSetupLoomIde()
-    neoForge()
-}
-
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
-}
-
-configurations {
-    common {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentNeoForge.extendsFrom common
+plugins {
+    id 'multiloader-loader'
+    id 'net.neoforged.moddev'
 }
 
 repositories {
-    maven {
-        name = 'NeoForged'
-        url = 'https://maven.neoforged.net/releases'
-    }
     maven {
         url = "https://thedarkcolour.github.io/KotlinForForge/"
     }
 }
 
-dependencies {
-    neoForge "net.neoforged:neoforge:$rootProject.neoforge_version"
-
-    modImplementation "dev.architectury:architectury-neoforge:$rootProject.architectury_api_version"
-    modLocalRuntime "me.fzzyhmstrs:fzzy_config:${rootProject.fzzy_config_version}+${rootProject.minecraft_version}+neoforge"
-
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
-}
-
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('META-INF/neoforge.mods.toml') {
-        expand version: project.version
+neoForge {
+    version = neoforge_version
+    // Automatically enable neoforge AccessTransformers if the file exists
+    def at = project(':common').file('src/main/resources/META-INF/accesstransformer.cfg')
+    if (at.exists()) {
+        accessTransformers.from(at.absolutePath)
+    }
+    parchment {
+        minecraftVersion = parchment_minecraft
+        mappingsVersion = parchment_version
+    }
+    runs {
+        configureEach {
+            systemProperty('neoforge.enabledGameTestNamespaces', mod_id)
+            ideName = "NeoForge ${it.name.capitalize()} (${project.path})" // Unify the run config names with fabric
+        }
+        client {
+            client()
+        }
+        data {
+            clientData()
+        }
+        server {
+            server()
+        }
+    }
+    mods {
+        "${mod_id}" {
+            sourceSet sourceSets.main
+        }
     }
 }
+
+dependencies {
+    implementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_version}+${project.minecraft_version}+neoforge"
+    compileOnly "maven.modrinth:iris:1.8.11+${rootProject.minecraft_version}-neoforge"
+}
+
+sourceSets.main.resources { srcDir 'src/generated/resources' }

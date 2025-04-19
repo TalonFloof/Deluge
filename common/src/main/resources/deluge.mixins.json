@@ -1,18 +1,21 @@
 {
   "required": true,
-  "package": "sh.talonfloof.deluge.mixins",
-  "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
+  "package": "sh.talonfloof.deluge.mixins",
+  "refmap": "${mod_id}.refmap.json",
+  "compatibilityLevel": "JAVA_18",
+  "mixins": [
+    "client.IrisCommonUniformsMixin"
+  ],
   "client": [
     "client.ClientLevelMixin",
     "client.FogRendererMixin",
     "client.LevelRendererMixin",
     "client.SkyRendererMixin"
   ],
-  "mixins": [
-    "client.IrisCommonUniformsMixin"
-  ],
+  "server": [],
   "injectors": {
     "defaultRequire": 1
   }
 }
+

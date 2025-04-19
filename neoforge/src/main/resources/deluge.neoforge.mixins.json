@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "sh.talonfloof.deluge.neoforge.mixins",
+  "package": "sh.talonfloof.deluge.mixins",
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [

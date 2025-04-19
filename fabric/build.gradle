@@ -1,20 +1,6 @@
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
-configurations {
-    common {
-        canBeResolved = true
-        canBeConsumed = false
-    }
-    compileClasspath.extendsFrom common
-    runtimeClasspath.extendsFrom common
-    developmentFabric.extendsFrom common
-}
-
-loom {
-    accessWidenerPath = project(":common").loom.accessWidenerPath
+plugins {
+    id 'multiloader-loader'
+    id 'fabric-loom'
 }
 
 repositories {
@@ -25,22 +11,38 @@ repositories {
 }
 
 dependencies {
-    modImplementation "net.fabricmc:fabric-loader:$rootProject.fabric_loader_version"
-
-    modImplementation "net.fabricmc.fabric-api:fabric-api:$rootProject.fabric_api_version"
-
-    modImplementation "dev.architectury:architectury-fabric:$rootProject.architectury_api_version"
-    modImplementation "com.terraformersmc:modmenu:${rootProject.modmenu_version}"
-
-    common(project(path: ':common', configuration: 'namedElements')) { transitive false }
-
-    modLocalRuntime "me.fzzyhmstrs:fzzy_config:${rootProject.fzzy_config_version}+${rootProject.minecraft_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${parchment_minecraft}:${parchment_version}@zip")
+    }
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+    modImplementation("com.terraformersmc:modmenu:${modmenu_version}")
+    compileOnly "maven.modrinth:iris:1.8.11+${rootProject.minecraft_version}-fabric"
+    modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_version}+${project.minecraft_version}"
 }
 
-processResources {
-    inputs.property 'version', project.version
-
-    filesMatching('fabric.mod.json') {
-        expand version: project.version
+loom {
+    def aw = project(':common').file("src/main/resources/${mod_id}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath.set(aw)
+    }
+    mixin {
+        defaultRefmapName.set("${mod_id}.refmap.json")
+    }
+    runs {
+        client {
+            client()
+            setConfigName('Fabric Client')
+            ideConfigGenerated(true)
+            runDir('runs/client')
+        }
+        server {
+            server()
+            setConfigName('Fabric Server')
+            ideConfigGenerated(true)
+            runDir('runs/server')
+        }
     }
 }
