@@ -1,6 +1,5 @@
 package sh.talonfloof.deluge;
 
-import dev.architectury.registry.client.rendering.RenderTypeRegistry;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
