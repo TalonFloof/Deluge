@@ -13,7 +13,7 @@ import sh.talonfloof.deluge.client.DelugeClient;
 public class LevelRendererMixin {
     @Redirect(method = { "method_62215", "lambda$addSkyPass$13" }, at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientLevel;getRainLevel(F)F")) // lambda of addSkyPass
     public float deluge$overcastCelestialRemoval(ClientLevel instance, float v) {
-        return DelugeClient.currentEvent.getTexture() != null ? 1 : 0;
+        return DelugeClient.currentEvent.getFogColor() != null ? 1 : 0;
     }
     @Redirect(method = "renderLevel", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Options;getCloudsType()Lnet/minecraft/client/CloudStatus;"))
     public CloudStatus deluge$disableClouds(Options instance) {
