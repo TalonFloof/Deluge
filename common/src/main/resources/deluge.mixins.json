@@ -5,12 +5,15 @@
   "refmap": "${mod_id}.refmap.json",
   "compatibilityLevel": "JAVA_18",
   "mixins": [
+    "MinecraftServerMixin",
+    "ServerLevelMixin",
     "client.IrisCommonUniformsMixin"
   ],
   "client": [
     "client.ClientLevelMixin",
     "client.FogRendererMixin",
     "client.LevelRendererMixin",
+    "client.MinecraftMixin",
     "client.SkyRendererMixin"
   ],
   "server": [],

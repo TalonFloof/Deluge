@@ -2,19 +2,28 @@ package sh.talonfloof.deluge;
 
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
+import me.fzzyhmstrs.fzzy_config.networking.api.NetworkApi;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sh.talonfloof.deluge.config.DelugeConfig;
+import sh.talonfloof.deluge.network.ClientNetworkHandling;
+import sh.talonfloof.deluge.network.EventUpdatePacket;
 import sh.talonfloof.deluge.utils.FastNoiseLite;
+
+import java.util.Random;
 
 public final class Deluge {
     public static final String MOD_ID = "deluge";
     public static final Logger LOG = LoggerFactory.getLogger(MOD_ID);
+    public static NetworkApi NETWORK;
 
     public static DelugeConfig commonConfig = ConfigApiJava.registerAndLoadConfig(DelugeConfig::new, RegisterType.BOTH);
 
     public static FastNoiseLite voronoiEventNoise;
+    public static int refreshTick = 0;
 
     static {
         voronoiEventNoise = new FastNoiseLite();
@@ -23,7 +32,25 @@ public final class Deluge {
     }
 
     public static void init() {
-        // Write common init code here.
+        NETWORK = ConfigApiJava.network(); // TODO: Create our own cross-platform library to handle this stuff, instead of using Fzzy Config to handle it
+        NETWORK.registerS2C(EventUpdatePacket.TYPE,EventUpdatePacket.STREAM_CODEC, ClientNetworkHandling::handle);
+    }
+
+    public static void onServerLevelTick(ServerLevel level) {
+        refreshTick++;
+        if(refreshTick >= 20) {
+            refreshTick = 0;
+            for(var player : level.players()) {
+                var chunkPos = player.chunkPosition();
+                var value = DelugeEventType.values()[new Random(Float.floatToIntBits(voronoiEventNoise.GetNoise(chunkPos.x, chunkPos.z))).nextInt(DelugeEventType.values().length)];
+                EventUpdatePacket.send(player,value);
+            }
+        }
+    }
+
+    public static void onLevelLoad(MinecraftServer server, ServerLevel level) {
+        LOG.info("Loading Voronoi Noise with seed {}", (int) level.getSeed());
+        voronoiEventNoise.SetSeed((int)level.getSeed());
     }
 
     public static ResourceLocation path(String path) {

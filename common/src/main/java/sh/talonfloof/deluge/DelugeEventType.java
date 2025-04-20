@@ -6,9 +6,10 @@ import org.joml.Vector3f;
 
 public enum DelugeEventType {
     CLEAR(null,null),
-    MAMMATUS(new Vector3f(72/255F,94/255F,133/255F),Deluge.path("textures/mammatus.png")),
     CIRRUS(null,Deluge.path("textures/cirrus.png")),
-    OVERCAST(new Vector3f(109/255F,112/255F,120/255F),Deluge.path("textures/storm.png"));
+    ALTOCUMULUS(null,Deluge.path("textures/altocumulus.png")),
+    OVERCAST(new Vector3f(109/255F,112/255F,120/255F),Deluge.path("textures/storm.png")),
+    MAMMATUS(new Vector3f(72/255F,94/255F,133/255F),Deluge.path("textures/mammatus.png"));
 
     private final Vector3f fogColor;
     private final ResourceLocation texture;

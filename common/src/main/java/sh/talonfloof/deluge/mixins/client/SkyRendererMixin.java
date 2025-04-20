@@ -27,37 +27,17 @@ import static sh.talonfloof.deluge.client.DelugeClient.clientConfig;
 
 @Mixin(SkyRenderer.class)
 public class SkyRendererMixin {
-    @Inject(method = "renderSkyDisc", at = @At(value = "HEAD"), cancellable = true)
-    public void deluge$removeSkyDisc(float f, float g, float h, CallbackInfo ci) {
-        if(DelugeClient.currentEvent.getFogColor() != null)
-            ci.cancel();
-    }
-    @Inject(method = "renderSunMoonAndStars", at = @At("TAIL"))
-    private void deluge$skyRender(PoseStack poseStack, MultiBufferSource.BufferSource bufferSource, float f, int i, float g, float h, FogParameters fogParameters, CallbackInfo ci) {
-        var texture = DelugeClient.currentEvent.getTexture();
-        if(texture != null) {
-            var mc = Minecraft.getInstance();
-            var cloudColor = mc.level.getCloudColor(0);
-            var cloudVec4 = new Vector4f(ARGB.vector3fFromRGB24(cloudColor),ARGB.alphaFloat(cloudColor));
-            if(DelugeIrisCompat.isShaderEnabled() && clientConfig.iris.irisDarkenClouds) {
-                if(DelugeClient.currentEvent.getFogColor() != null)
-                    cloudVec4 = cloudVec4.mul(0.5F, 0.5F, 0.5F, 1.0F);
-                else
-                    cloudVec4 = cloudVec4.mul(0.8F, 0.8F, 0.8F, 1.0F);
-            }
-            var renderDistance = (Math.min(mc.options.getEffectiveRenderDistance(),16) * 16) * 2F;
-            // 2 (+ -), 3 (- -), 6 (+ +), 7 (- +)
-            poseStack.pushPose();
-            poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 100));
-            Matrix4f matrix = poseStack.last().pose();
-            var type = DelugeRenderTypes.SKY_DETAILS.apply(texture);
-            VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
-            vertexConsumer.addVertex(matrix, -renderDistance, 100, -renderDistance).setUv(0.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
-            vertexConsumer.addVertex(matrix, renderDistance, 100, -renderDistance).setUv(1.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
-            vertexConsumer.addVertex(matrix, renderDistance, 100, renderDistance).setUv(1.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
-            vertexConsumer.addVertex(matrix, -renderDistance, 100, renderDistance).setUv(0.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,cloudVec4.w);
-            poseStack.popPose();
-            bufferSource.endBatch(type);
-        }
+    @Redirect(method = "renderSkyDisc", at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/RenderSystem;setShaderColor(FFFF)V", ordinal = 0))
+    public void deluge$fadeSkyDisc(float red, float green, float blue, float alpha) {
+        var initialColor = new Vector4f(red,green,blue,alpha);
+        var mc = Minecraft.getInstance();
+        var cloudColor = mc.level.getCloudColor(0);
+        var vec = ARGB.vector3fFromRGB24(cloudColor);
+        var previousFogColorVec = DelugeClient.previousEvent.getFogColor() != null ? new Vector4f(DelugeClient.previousEvent.getFogColor().mul(vec),1.0F) : initialColor;
+        var currentFogColorVec = DelugeClient.currentEvent.getFogColor() != null ? new Vector4f(DelugeClient.currentEvent.getFogColor().mul(vec),1.0F) : initialColor;
+        var previousFogColor = ARGB.color(255,ARGB.as8BitChannel(previousFogColorVec.x),ARGB.as8BitChannel(previousFogColorVec.y),ARGB.as8BitChannel(previousFogColorVec.z));
+        var currentFogColor = ARGB.color(255,ARGB.as8BitChannel(currentFogColorVec.x),ARGB.as8BitChannel(currentFogColorVec.y),ARGB.as8BitChannel(currentFogColorVec.z));
+        var finalColor = ARGB.lerp((float)(100-DelugeClient.fadeTime)/100F,previousFogColor,currentFogColor);
+        RenderSystem.setShaderColor(ARGB.redFloat(finalColor),ARGB.greenFloat(finalColor),ARGB.blueFloat(finalColor),alpha);
     }
 }

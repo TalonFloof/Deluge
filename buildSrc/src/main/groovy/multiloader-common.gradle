@@ -54,6 +54,7 @@ repositories {
         name = 'BlameJared'
         url = 'https://maven.blamejared.com'
     }
+    maven { url "https://maven.architectury.dev/" }
 }
 
 // Declare capabilities on the outgoing configurations.
