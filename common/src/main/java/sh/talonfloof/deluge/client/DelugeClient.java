@@ -3,6 +3,7 @@ package sh.talonfloof.deluge.client;
 import me.fzzyhmstrs.fzzy_config.api.ConfigApiJava;
 import me.fzzyhmstrs.fzzy_config.api.RegisterType;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import sh.talonfloof.deluge.DelugeEventType;
 import sh.talonfloof.deluge.client.config.DelugeClientConfig;
 
@@ -36,5 +37,11 @@ public class DelugeClient {
                 previousEvent = currentEvent;
             }
         }
+    }
+
+    public static void onClientJoin(ClientLevel level) {
+        previousEvent = DelugeEventType.CLEAR;
+        currentEvent = DelugeEventType.CLEAR;
+        fadeTime = 0;
     }
 }

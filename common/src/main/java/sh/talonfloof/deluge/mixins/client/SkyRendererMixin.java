@@ -32,9 +32,9 @@ public class SkyRendererMixin {
         var initialColor = new Vector4f(red,green,blue,alpha);
         var mc = Minecraft.getInstance();
         var cloudColor = mc.level.getCloudColor(0);
-        var vec = ARGB.vector3fFromRGB24(cloudColor);
-        var previousFogColorVec = DelugeClient.previousEvent.getFogColor() != null ? new Vector4f(DelugeClient.previousEvent.getFogColor().mul(vec),1.0F) : initialColor;
-        var currentFogColorVec = DelugeClient.currentEvent.getFogColor() != null ? new Vector4f(DelugeClient.currentEvent.getFogColor().mul(vec),1.0F) : initialColor;
+        var vec = new Vector4f(ARGB.vector3fFromRGB24(cloudColor),1F);
+        var previousFogColorVec = DelugeClient.previousEvent.getFogColor() != null ? new Vector4f(DelugeClient.previousEvent.getFogColor(),1.0F).mul(vec) : initialColor;
+        var currentFogColorVec = DelugeClient.currentEvent.getFogColor() != null ? new Vector4f(DelugeClient.currentEvent.getFogColor(),1.0F).mul(vec) : initialColor;
         var previousFogColor = ARGB.color(255,ARGB.as8BitChannel(previousFogColorVec.x),ARGB.as8BitChannel(previousFogColorVec.y),ARGB.as8BitChannel(previousFogColorVec.z));
         var currentFogColor = ARGB.color(255,ARGB.as8BitChannel(currentFogColorVec.x),ARGB.as8BitChannel(currentFogColorVec.y),ARGB.as8BitChannel(currentFogColorVec.z));
         var finalColor = ARGB.lerp((float)(100-DelugeClient.fadeTime)/100F,previousFogColor,currentFogColor);

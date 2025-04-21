@@ -29,6 +29,7 @@ public final class Deluge {
         voronoiEventNoise = new FastNoiseLite();
         voronoiEventNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
         voronoiEventNoise.SetCellularReturnType(FastNoiseLite.CellularReturnType.CellValue);
+        voronoiEventNoise.SetFrequency(0.015F);
     }
 
     public static void init() {
@@ -42,10 +43,22 @@ public final class Deluge {
             refreshTick = 0;
             for(var player : level.players()) {
                 var chunkPos = player.chunkPosition();
-                var value = DelugeEventType.values()[new Random(Float.floatToIntBits(voronoiEventNoise.GetNoise(chunkPos.x, chunkPos.z))).nextInt(DelugeEventType.values().length)];
+                var value = selectEventType(voronoiEventNoise.GetNoise(chunkPos.x, chunkPos.z));
                 EventUpdatePacket.send(player,value);
             }
         }
+    }
+
+    private static int RARE_RANGE_BEGIN = 4;
+
+    private static DelugeEventType selectEventType(float value) {
+        var rand = new Random(Float.floatToIntBits(value));
+        var len = DelugeEventType.values().length;
+        if(rand.nextInt(10) == 0) {
+            // Select a rare event
+            return DelugeEventType.values()[rand.nextInt(RARE_RANGE_BEGIN,len)];
+        }
+        return DelugeEventType.values()[rand.nextInt(RARE_RANGE_BEGIN)];
     }
 
     public static void onLevelLoad(MinecraftServer server, ServerLevel level) {
