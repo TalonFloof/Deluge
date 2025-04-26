@@ -12,6 +12,7 @@ import sh.talonfloof.deluge.config.DelugeConfig;
 import sh.talonfloof.deluge.network.ClientNetworkHandling;
 import sh.talonfloof.deluge.network.EventUpdatePacket;
 import sh.talonfloof.deluge.utils.FastNoiseLite;
+import sh.talonfloof.deluge.wind.ServerWindManager;
 
 import java.util.Random;
 
@@ -24,6 +25,8 @@ public final class Deluge {
 
     public static FastNoiseLite voronoiEventNoise;
     public static int refreshTick = 0;
+
+    public static ServerWindManager windManager = new ServerWindManager();
 
     static {
         voronoiEventNoise = new FastNoiseLite();
@@ -38,6 +41,7 @@ public final class Deluge {
     }
 
     public static void onServerLevelTick(ServerLevel level) {
+        windManager.tick();
         refreshTick++;
         if(refreshTick >= 20) {
             refreshTick = 0;

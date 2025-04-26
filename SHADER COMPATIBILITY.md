@@ -1,5 +1,7 @@
 # Shader Compatibility Guide
 
+NOTE: SHADERS WITH ROUND SUN/MOON SETTINGS MUST HAVE THESE DISABLED FOR DELUGE TO RENDER CORRECTLY, THIS IS A TECHNICAL LIMITATION WITH HOW MINECRAFT SHADERS WORK!
+
 Legend:
 - ✅ = Works perfectly, no configuration needed
 - ✔️ = Works perfectly, but some configuration needs to be adjusted (see below)
@@ -11,9 +13,12 @@ Legend:
 |---------------------------------|----------------|
 | Complementary/Rethinking Voxels | 🐞             |
 | BSL/AstraLex                    | ✔️             |
+| Sildur's Vibrant Shaders        | ✔️             |
 | MakeUp - Ultra Fast             | ✔️             |
-| Solas Shader                    | 🐛 |
-| Photon                          | 🐛 |
+| Chocapic13' Shaders             | ❌              |
+| SEUS Renewed¹                   | ❌              |
+| Solas Shader                    | 🐛             |
+| Photon                          | 🐛             |
 | Super Duper Vanilla             | 🐞             |
 | VanillAA                        | ✅              |
 | Miniature Shader                | ✅              |
@@ -21,6 +26,18 @@ Legend:
 | RenderPearl                     | ❌              |
 | Rudimentary                     | ✅              |
 | Tea Shaders                     | ✅              |
-| Shrimple                        | 🐞 |
-| Lux V1                          | ❌ |
-| Nostalgia Shader                | ✔️ |
+| Shrimple                        | 🐞             |
+| Lux V1                          | ❌              |
+| Nostalgia Shader                | ✔️             |
+
+¹ Other versions of SEUS are non-free. Because of this, they were not tested
+
+> ## Complementary/Rethinking Voxels
+> Although it is possible to get clouds to render by making the sun/moon style "Reimagined", there is one issue that might affect your experience with Deluge.
+> On events with custom fog, the shader rain fog will hide the skybox, making clouds not show up. If you don't mind this, then everything else works just fine, otherwise don't use these shaders.
+
+> ## BSL/AstraLex
+> BSL/AstraLex work great with Deluge! Simply change the cloud type to Vanilla and you're good to go! 
+
+> ## Sildur's Vibrant Shaders
+> Sildur's Vibrant Shaders works really well with Deluge!
