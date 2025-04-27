@@ -24,6 +24,7 @@ public final class Deluge {
     public static DelugeConfig commonConfig = ConfigApiJava.registerAndLoadConfig(DelugeConfig::new, RegisterType.BOTH);
 
     public static FastNoiseLite voronoiEventNoise;
+    public static FastNoiseLite simplexPrecipitationNoise;
     public static int refreshTick = 0;
 
     public static ServerWindManager windManager = new ServerWindManager();
@@ -33,6 +34,9 @@ public final class Deluge {
         voronoiEventNoise.SetNoiseType(FastNoiseLite.NoiseType.Cellular);
         voronoiEventNoise.SetCellularReturnType(FastNoiseLite.CellularReturnType.CellValue);
         voronoiEventNoise.SetFrequency(0.015F);
+        simplexPrecipitationNoise = new FastNoiseLite();
+        simplexPrecipitationNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        simplexPrecipitationNoise.SetFrequency(0.004F);
     }
 
     public static void init() {
@@ -48,12 +52,13 @@ public final class Deluge {
             for(var player : level.players()) {
                 var chunkPos = player.chunkPosition();
                 var value = selectEventType(voronoiEventNoise.GetNoise(chunkPos.x, chunkPos.z));
-                EventUpdatePacket.send(player,value);
+                var rainValue = Math.clamp(simplexPrecipitationNoise.GetNoise(chunkPos.x,chunkPos.z, ((double)level.getGameTime()/100)),0F,.250F)/.250F;
+                EventUpdatePacket.send(player,value,rainValue);
             }
         }
     }
 
-    private static int RARE_RANGE_BEGIN = 4;
+    private static int RARE_RANGE_BEGIN = 5;
 
     private static DelugeEventType selectEventType(float value) {
         var rand = new Random(Float.floatToIntBits(value));
@@ -68,6 +73,7 @@ public final class Deluge {
     public static void onLevelLoad(MinecraftServer server, ServerLevel level) {
         LOG.info("Loading Voronoi Noise with seed {}", (int) level.getSeed());
         voronoiEventNoise.SetSeed((int)level.getSeed());
+        simplexPrecipitationNoise.SetSeed((int)(level.getSeed()+1));
     }
 
     public static ResourceLocation path(String path) {

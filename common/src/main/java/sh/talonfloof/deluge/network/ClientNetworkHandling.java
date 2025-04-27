@@ -6,5 +6,6 @@ import sh.talonfloof.deluge.client.DelugeClient;
 public class ClientNetworkHandling {
     public static void handle(EventUpdatePacket payload, ClientPlayNetworkContext context) {
         DelugeClient.changeEvent(payload.eventType());
+        DelugeClient.rainLevel = payload.rainLevel();
     }
 }

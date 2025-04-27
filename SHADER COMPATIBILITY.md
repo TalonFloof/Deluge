@@ -27,8 +27,8 @@ Legend:
 | Rudimentary                     | ✅              |
 | Tea Shaders                     | ✅              |
 | Shrimple                        | 🐞             |
-| Lux V1                          | ❌              |
-| Nostalgia Shader                | ✔️             |
+| Lux V1                          | 🐛             |
+| Nostalgia Shader                | ❌              |
 
 ¹ Other versions of SEUS are non-free. Because of this, they were not tested
 
@@ -37,7 +37,9 @@ Legend:
 > On events with custom fog, the shader rain fog will hide the skybox, making clouds not show up. If you don't mind this, then everything else works just fine, otherwise don't use these shaders.
 
 > ## BSL/AstraLex
-> BSL/AstraLex work great with Deluge! Simply change the cloud type to Vanilla and you're good to go! 
+> BSL/AstraLex work great with Deluge! On BSL, Simply change the cloud type to Off and you're good to go! 
+> On AstraLex, Disable Round Sun/Moon, Enable RP Custom Sky, and set the Cloud Style to Off.
 
 > ## Sildur's Vibrant Shaders
-> Sildur's Vibrant Shaders works really well with Deluge!
+> Sildur's Vibrant Shaders works really well with Deluge! Enable Default Skybox, set Clouds to Off, and disable Rain Drops.
+

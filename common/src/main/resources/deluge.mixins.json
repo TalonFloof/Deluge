@@ -15,7 +15,8 @@
     "client.FogRendererMixin",
     "client.LevelRendererMixin",
     "client.MinecraftMixin",
-    "client.SkyRendererMixin"
+    "client.SkyRendererMixin",
+    "client.LevelMixinClient"
   ],
   "server": [],
   "injectors": {

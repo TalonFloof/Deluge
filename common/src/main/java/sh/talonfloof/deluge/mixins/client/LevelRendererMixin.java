@@ -50,7 +50,7 @@ public class LevelRendererMixin {
         var prevTexture = DelugeClient.previousEvent.getTexture();
         var texture = DelugeClient.currentEvent.getTexture();
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 100));
+        poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 50));
         Matrix4f matrix = poseStack.last().pose();
         if(prevTexture != null && !prevTexture.equals(texture)) {
             var type = DelugeRenderTypes.SKY_DETAILS.apply(prevTexture);
@@ -71,5 +71,9 @@ public class LevelRendererMixin {
             bufferSource.endBatch(type);
         }
         poseStack.popPose();
+    }
+    @Inject(method = "addCloudsPass", at = @At("HEAD"), cancellable = true)
+    public void deluge$cancelCloudRendering(FrameGraphBuilder p_361907_, CloudStatus p_364196_, Vec3 p_362985_, float p_365209_, int p_362342_, float p_362337_, CallbackInfo ci) {
+        ci.cancel();
     }
 }

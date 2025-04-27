@@ -10,6 +10,7 @@ import sh.talonfloof.deluge.client.config.DelugeClientConfig;
 public class DelugeClient {
     public static DelugeEventType previousEvent = DelugeEventType.CLEAR;
     public static DelugeEventType currentEvent = DelugeEventType.CLEAR;
+    public static float rainLevel = 0F;
     public static int fadeTime = 0;
 
     public static void changeEvent(DelugeEventType newEvent) {
