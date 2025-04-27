@@ -5,7 +5,7 @@ NOTE: SHADERS WITH ROUND SUN/MOON SETTINGS MUST HAVE THESE DISABLED FOR DELUGE T
 Legend:
 - ✅ = Works perfectly, no configuration needed
 - ✔️ = Works perfectly, but some configuration needs to be adjusted (see below)
-- 🐞 = Works, but with some unfixable issues (see below)
+- 🐞 = Works, but with some minor quirks or unfixable issues (see below)
 - 🐛 = Major Visual Bugs, don't use
 - ❌ = Doesn't work at all
 
@@ -26,9 +26,10 @@ Legend:
 | RenderPearl                     | ❌              |
 | Rudimentary                     | ✅              |
 | Tea Shaders                     | ✅              |
-| Shrimple                        | 🐞             |
+| Shrimple                        | 🐛             |
 | Lux V1                          | 🐛             |
-| Nostalgia Shader                | ❌              |
+| Nostalgia Shader                | 🐞             |
+| Insanity Shader                 | ✔️             |
 
 ¹ Other versions of SEUS are non-free. Because of this, they were not tested
 
