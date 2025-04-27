@@ -12,11 +12,13 @@
   "client": [
     "client.ClientLevelMixin",
     "client.ClientPacketListenerMixin",
+    "client.FallingLeavesParticleMixin",
     "client.FogRendererMixin",
+    "client.LevelMixinClient",
     "client.LevelRendererMixin",
     "client.MinecraftMixin",
-    "client.SkyRendererMixin",
-    "client.LevelMixinClient"
+    "client.ParticleMixin",
+    "client.SkyRendererMixin"
   ],
   "server": [],
   "injectors": {

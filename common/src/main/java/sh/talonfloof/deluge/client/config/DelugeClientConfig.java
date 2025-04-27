@@ -12,6 +12,8 @@ public class DelugeClientConfig extends Config {
     }
 
     public IrisSection iris = new IrisSection();
+    @Comment("Renders a debug overlay for the weather events on the bottom right of the debug (F3) screen, only works on singleplayer")
+    public boolean showDebugOverlay = false;
 
     public DelugeClientConfig() {
         super(Deluge.path("client"));

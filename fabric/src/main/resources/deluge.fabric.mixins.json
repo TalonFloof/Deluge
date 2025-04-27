@@ -6,6 +6,8 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
+    "client.FabricDebugScreenOverlayMixin",
+    "client.FabricLevelRendererMixin"
   ],
   "server": [],
   "injectors": {

@@ -11,32 +11,31 @@ Legend:
 
 | Shader Name                     | Is Compatible? |
 |---------------------------------|----------------|
-| Complementary/Rethinking Voxels | 🐞             |
+| VanillAA                        | ✅              |
+| Miniature Shader                | ✅              |
+| Rudimentary                     | ✅              |
+| Tea Shaders                     | ✅              |
 | BSL/AstraLex                    | ✔️             |
 | Sildur's Vibrant Shaders        | ✔️             |
 | MakeUp - Ultra Fast             | ✔️             |
-| Chocapic13' Shaders             | ❌              |
-| SEUS Renewed¹                   | ❌              |
-| Solas Shader                    | 🐛             |
-| Photon                          | 🐛             |
+| Pastel Shaders                  | ✔️             |
+| Insanity Shader                 | ✔️             |
+| FastPBR                         | ✔️             |
+| Complementary/Rethinking Voxels | 🐞             |
 | Bliss Shader                    | 🐞             |
 | Super Duper Vanilla             | 🐞             |
-| VanillAA                        | ✅              |
-| Miniature Shader                | ✅              |
-| Kappa Shader                    | ❌              |
-| RenderPearl                     | ❌              |
-| Rudimentary                     | ✅              |
-| Tea Shaders                     | ✅              |
+| Nostalgia Shader                | 🐞             |
+| Solas Shader                    | 🐛             |
+| Photon                          | 🐛             |
 | Shrimple                        | 🐛             |
 | Lux V1                          | 🐛             |
-| Nostalgia Shader                | 🐞             |
-| Insanity Shader                 | ✔️             |
+| Chocapic13' Shaders             | ❌              |
+| SEUS Renewed¹                   | ❌              |
+| Kappa Shader                    | ❌              |
+| Noble Shaders                   | ❌              |
+| RenderPearl                     | ❌              |
 
 ¹ Other versions of SEUS are non-free. Because of this, they were not tested
-
-> ## Complementary/Rethinking Voxels
-> Although it is possible to get clouds to render by making the sun/moon style "Reimagined", there is one issue that might affect your experience with Deluge.
-> On events with custom fog, the shader rain fog will hide the skybox, making clouds not show up. If you don't mind this, then everything else works just fine, otherwise don't use these shaders.
 
 > ## BSL/AstraLex
 > BSL/AstraLex work great with Deluge! On BSL, Simply change the cloud type to Off and you're good to go! 
@@ -45,3 +44,6 @@ Legend:
 > ## Sildur's Vibrant Shaders
 > Sildur's Vibrant Shaders works really well with Deluge! Enable Default Skybox, set Clouds to Off, and disable Rain Drops.
 
+> ## Complementary/Rethinking Voxels
+> Although it is possible to get clouds to render by making the sun/moon style "Reimagined", there is one issue that might affect your experience with Deluge.
+> On events with custom fog, the shader rain fog will hide the skybox, making clouds not show up. If you don't mind this, then everything else works just fine, otherwise don't use these shaders.
