@@ -19,6 +19,7 @@ Legend:
 | SEUS Renewed¹                   | ❌              |
 | Solas Shader                    | 🐛             |
 | Photon                          | 🐛             |
+| Bliss Shader                    | 🐞             |
 | Super Duper Vanilla             | 🐞             |
 | VanillAA                        | ✅              |
 | Miniature Shader                | ✅              |
