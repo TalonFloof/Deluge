@@ -45,6 +45,7 @@ neoForge {
 dependencies {
     implementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_version}+${project.minecraft_version}+neoforge"
     compileOnly "maven.modrinth:iris:1.8.11+${rootProject.minecraft_version}-neoforge"
+    jarJar("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }

@@ -1,8 +1,11 @@
 package sh.talonfloof.deluge.mixins.client;
 
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import org.joml.Vector2d;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -21,9 +24,19 @@ public abstract class ParticleMixin {
     @Shadow protected double yd;
     @Shadow protected double zd;
 
+    @Shadow @Final protected ClientLevel level;
+
+    @Shadow protected double x;
+    @Shadow protected double y;
+    @Shadow protected double z;
+
     @Inject(method = "tick", at = @At("HEAD"))
     public void deluge$moveWithWind(CallbackInfo ci) {
         if(this.hasPhysics) {
+            if(!level.canSeeSky(new BlockPos((int)x,(int)y,(int)z)))
+                return;
+            if(this.getClass().getSuperclass() != null && this.getClass().getSuperclass().getName().equals("pigcart.particlerain.particle.WeatherParticle"))
+                return;
             var windMovement = clientWindManager.getWindVec(1);
             var movement = new Vector2d(xd,zd);
             if(movement.length() <= windMovement.length()) {

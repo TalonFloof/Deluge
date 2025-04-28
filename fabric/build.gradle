@@ -19,8 +19,9 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation("com.terraformersmc:modmenu:${modmenu_version}")
-    compileOnly "maven.modrinth:iris:1.8.11+${rootProject.minecraft_version}-fabric"
+    compileOnly "maven.modrinth:iris:1.8.11+${project.minecraft_version}-fabric"
     modImplementation "me.fzzyhmstrs:fzzy_config:${project.fzzy_version}+${project.minecraft_version}"
+    implementation include("com.moandjiezana.toml:toml4j:${project.toml4j_version}")
 }
 
 loom {

@@ -93,6 +93,7 @@ public final class Deluge {
             LOG.info("Loading Voronoi Noise with seed {}", (int) level.getSeed());
             voronoiEventNoise.SetSeed((int) level.getSeed());
             simplexPrecipitationNoise.SetSeed((int) (level.getSeed() + 1));
+            windManager.load(server);
         }
     }
 
