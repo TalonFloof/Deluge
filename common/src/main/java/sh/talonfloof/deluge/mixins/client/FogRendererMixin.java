@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.FogParameters;
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.util.ARGB;
 import org.joml.Vector4f;
@@ -18,7 +19,7 @@ import sh.talonfloof.deluge.client.DelugeClient;
 public class FogRendererMixin {
 
     @Inject(method = "computeFogColor", at = @At("RETURN"), cancellable = true)
-    private static void setupColor(Camera camera, float tickDelta, ClientLevel clientLevel, int i, float g, CallbackInfoReturnable<Vector4f> cir) {
+    private static void deluge$setupColor(Camera camera, float tickDelta, ClientLevel clientLevel, int i, float g, CallbackInfoReturnable<Vector4f> cir) {
         var initialFog = cir.getReturnValue();
         var mc = Minecraft.getInstance();
         var cloudColor = mc.level.getCloudColor(tickDelta);
@@ -30,5 +31,14 @@ public class FogRendererMixin {
         var finalColor = ARGB.lerp((float)(100-DelugeClient.fadeTime)/100F,previousFogColor,currentFogColor);
         cir.setReturnValue(new Vector4f(ARGB.vector3fFromRGB24(finalColor),ARGB.alphaFloat(finalColor)));
         cir.cancel();
+    }
+
+    @Inject(method = "setupFog", at= @At("RETURN"), cancellable = true)
+    private static void deluge$setupFog(Camera camera, FogRenderer.FogMode fogMode, Vector4f fogColor, float renderDistance, boolean isFoggy, float partialTick, CallbackInfoReturnable<FogParameters> cir) {
+        if(fogMode.equals(FogRenderer.FogMode.FOG_TERRAIN)) {
+            var mc = Minecraft.getInstance();
+            var tLevel = mc.level.getThunderLevel(partialTick);
+
+        }
     }
 }

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "mixins": [],
   "client": [
+    "client.NeoForgeDebugScreenOverlayMixin",
     "client.NeoForgeLevelRendererMixin"
   ],
   "server": [],

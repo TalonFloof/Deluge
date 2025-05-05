@@ -12,6 +12,7 @@ public class DelugeClient {
     public static DelugeEventType previousEvent = DelugeEventType.CLEAR;
     public static DelugeEventType currentEvent = DelugeEventType.CLEAR;
     public static float rainLevel = 0F;
+    public static float thunderLevel = 0F;
     public static int fadeTime = 0;
     public static ClientWindManager clientWindManager = new ClientWindManager();
 

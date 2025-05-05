@@ -7,6 +7,7 @@ import net.minecraft.data.worldgen.DimensionTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public final class Deluge {
 
     public static FastNoiseLite voronoiEventNoise;
     public static FastNoiseLite simplexPrecipitationNoise;
+    public static FastNoiseLite simplexThunderNoise;
     public static int refreshTick = 0;
 
     public static ServerWindManager windManager = new ServerWindManager();
@@ -41,9 +43,18 @@ public final class Deluge {
         voronoiEventNoise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2Reduced);
         voronoiEventNoise.SetDomainWarpAmp(34F);
         voronoiEventNoise.SetFrequency(0.015F);
+        voronoiEventNoise.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXYPlanes);
         simplexPrecipitationNoise = new FastNoiseLite();
         simplexPrecipitationNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
         simplexPrecipitationNoise.SetFrequency(0.004F);
+        simplexThunderNoise = new FastNoiseLite();
+        simplexThunderNoise.SetNoiseType(FastNoiseLite.NoiseType.OpenSimplex2S);
+        simplexThunderNoise.SetFrequency(0.005F);
+        simplexThunderNoise.SetDomainWarpType(FastNoiseLite.DomainWarpType.OpenSimplex2);
+        simplexThunderNoise.SetDomainWarpAmp(170.5F);
+        simplexThunderNoise.SetFractalType(FastNoiseLite.FractalType.DomainWarpProgressive);
+        simplexThunderNoise.SetFractalOctaves(5);
+        simplexThunderNoise.SetRotationType3D(FastNoiseLite.RotationType3D.ImproveXYPlanes);
     }
 
     public static void init() {
@@ -61,8 +72,7 @@ public final class Deluge {
                 for (var player : level.players()) {
                     var chunkPos = player.chunkPosition();
                     var value = selectEventType(getEventNoise(level, chunkPos.x, chunkPos.z));
-                    var rainValue = getRainNoise(level, chunkPos.x, chunkPos.z);
-                    EventUpdatePacket.send(player, value, rainValue);
+                    EventUpdatePacket.send(player, value, getRainLevel(level, chunkPos.x, chunkPos.z), getThunderLevel(level, chunkPos.x, chunkPos.z));
                 }
             }
         }
@@ -76,6 +86,28 @@ public final class Deluge {
 
     public static float getRainNoise(Level level, double x, double z) {
         return Math.clamp(simplexPrecipitationNoise.GetNoise(x,z, ((double)level.getGameTime()/100)),0F,.250F)/.250F;
+    }
+
+    public static float getThunderNoise(Level level, double x, double z) {
+        return (Math.clamp(simplexThunderNoise.GetNoise(x,z, ((double)level.getGameTime()/200)),.3F,.31F)-.3F)/.01F;
+    }
+
+    public static float getRainLevel(Level level, double x, double z) {
+        var value = Deluge.selectEventType(Deluge.getEventNoise(level, x, z));
+        if(!value.canRain())
+            return 0F;
+        if(value == DelugeEventType.SUPERCELL)
+            return 1F;
+        return Deluge.getRainNoise(level, x, z);
+    }
+
+    public static float getThunderLevel(Level level, double x, double z) {
+        var value = Deluge.selectEventType(Deluge.getEventNoise(level, x, z));
+        if(!value.canRain() || !value.canThunder())
+            return 0F;
+        if(value == DelugeEventType.SUPERCELL)
+            return 1F;
+        return Math.clamp(Deluge.getThunderNoise(level, x, z),0F,Deluge.getRainNoise(level, x, z));
     }
 
     public static DelugeEventType selectEventType(float value) {
@@ -93,6 +125,7 @@ public final class Deluge {
             LOG.info("Loading Voronoi Noise with seed {}", (int) level.getSeed());
             voronoiEventNoise.SetSeed((int) level.getSeed());
             simplexPrecipitationNoise.SetSeed((int) (level.getSeed() + 1));
+            simplexThunderNoise.SetSeed((int)(level.getSeed() + 2));
             windManager.load(server);
         }
     }

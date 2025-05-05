@@ -50,7 +50,7 @@ public class ServerWindManager implements IWindAccessor {
         if(targetAngleTime <= 0 && rand.nextInt(commonConfig.wind.windAngleChangeChance) == 0) {
             // Select a new angle and calculate the direction and distance needed to get to it (on a unit circle given the angle is theta)
             initialAngle = angle;
-            targetAngle = rand.nextInt(360);
+            targetAngle = rand.nextInt(-180,180);
             targetAngleInitialTime = Math.round(Math.min(1F,Math.abs((targetAngle-angle)/180F))*300F);
             targetAngleTime = targetAngleInitialTime;
         }
@@ -107,7 +107,7 @@ public class ServerWindManager implements IWindAccessor {
             speed = toml.getDouble("speed").floatValue();
             Deluge.LOG.info("Loaded wind data from TOML");
         } else {
-            angle = rand.nextInt(360);
+            angle = rand.nextInt(-180,180);
             initialAngle = 0;
             targetAngle = 0;
             targetAngleTime = 0;

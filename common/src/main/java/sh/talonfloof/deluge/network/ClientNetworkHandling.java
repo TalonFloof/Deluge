@@ -9,6 +9,7 @@ public class ClientNetworkHandling {
     public static void handle(EventUpdatePacket payload, ClientPlayNetworkContext context) {
         DelugeClient.changeEvent(payload.eventType());
         DelugeClient.rainLevel = payload.rainLevel();
+        DelugeClient.thunderLevel = payload.thunderLevel();
     }
     public static void handle(WindUpdatePacket payload, ClientPlayNetworkContext context) {
         clientWindManager.angle = payload.angle();

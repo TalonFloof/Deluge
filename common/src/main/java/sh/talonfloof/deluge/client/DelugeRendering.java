@@ -33,26 +33,31 @@ public class DelugeRendering {
 
         var prevTexture = DelugeClient.previousEvent.getTexture();
         var texture = DelugeClient.currentEvent.getTexture();
-        poseStack.pushPose();
-        poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 50));
-        Matrix4f matrix = poseStack.last().pose();
         if(prevTexture != null && !prevTexture.equals(texture)) {
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 50 * DelugeClient.previousEvent.getRotationMultiplier()));
+            Matrix4f matrix = poseStack.last().pose();
             var type = DelugeRenderTypes.SKY_DETAILS.apply(prevTexture);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
             vertexConsumer.addVertex(matrix, -renderDistance, 100, -renderDistance).setUv(0.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z, (float)(DelugeClient.fadeTime)/100F);
             vertexConsumer.addVertex(matrix, renderDistance, 100, -renderDistance).setUv(1.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(DelugeClient.fadeTime)/100F);
             vertexConsumer.addVertex(matrix, renderDistance, 100, renderDistance).setUv(1.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(DelugeClient.fadeTime)/100F);
             vertexConsumer.addVertex(matrix, -renderDistance, 100, renderDistance).setUv(0.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(DelugeClient.fadeTime)/100F);
+            poseStack.popPose();
         }
         if(texture != null) {
+            poseStack.pushPose();
+            poseStack.mulPose(Axis.YN.rotationDegrees((float) mc.level.getGameTime() / 50 * DelugeClient.currentEvent.getRotationMultiplier()));
+            Matrix4f matrix = poseStack.last().pose();
             var type = DelugeRenderTypes.SKY_DETAILS.apply(texture);
             VertexConsumer vertexConsumer = bufferSource.getBuffer(type);
             vertexConsumer.addVertex(matrix, -renderDistance, 100, -renderDistance).setUv(0.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(100 - DelugeClient.fadeTime)/100F);
             vertexConsumer.addVertex(matrix, renderDistance, 100, -renderDistance).setUv(1.0F, 0.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(100 - DelugeClient.fadeTime)/100F);
             vertexConsumer.addVertex(matrix, renderDistance, 100, renderDistance).setUv(1.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(100 - DelugeClient.fadeTime)/100F);
             vertexConsumer.addVertex(matrix, -renderDistance, 100, renderDistance).setUv(0.0F, 1.0F).setColor(cloudVec4.x,cloudVec4.y,cloudVec4.z,(float)(100 - DelugeClient.fadeTime)/100F);
+            poseStack.popPose();
         }
-        poseStack.popPose();
+
     }
 
     private static void deluge$drawRect(GuiGraphics gfx, int x, int y, int w, int h, int c) {
@@ -73,11 +78,14 @@ public class DelugeRendering {
         for(int y=-64; y < 64; y++) {
             for(int x=-64; x < 64; x++) {
                 var vValue = Deluge.getEventNoise(mc.level,chunkPos.x+x,chunkPos.z+y);
-                var event = Deluge.selectEventType(vValue);
-                var rValue = Deluge.getRainNoise(mc.level,chunkPos.x+x,chunkPos.z+y);
+                var rValue = Deluge.getRainLevel(mc.level,chunkPos.x+x,chunkPos.z+y);
+                var tValue = Deluge.getThunderLevel(mc.level,chunkPos.x+x,chunkPos.z+y);
                 deluge$drawRect(gfx,width-64+x,height-64+y,1,1,0xff000000 | ARGB.greyscale(ARGB.as8BitChannel((vValue+1.0F)/2F)));
-                if(event.canRain() && rValue > 0) {
+                if(rValue > 0) {
                     deluge$drawRect(gfx, width - 64 + x, height - 64 + y, 1, 1, ARGB.colorFromFloat(rValue, 0F, 1F, 1F));
+                    if(tValue > 0) {
+                        deluge$drawRect(gfx, width - 64 + x, height - 64 + y, 1, 1, ARGB.colorFromFloat(Math.clamp(tValue,0,rValue), 1F, 1F, 0F));
+                    }
                 }
             }
         }

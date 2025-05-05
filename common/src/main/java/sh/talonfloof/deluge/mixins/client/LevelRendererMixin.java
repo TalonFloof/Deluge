@@ -1,29 +1,18 @@
 package sh.talonfloof.deluge.mixins.client;
 
 import com.mojang.blaze3d.framegraph.FrameGraphBuilder;
-import com.mojang.blaze3d.resource.GraphicsResourceAllocator;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import net.minecraft.client.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix4f;
 import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import sh.talonfloof.deluge.client.DelugeClient;
-import sh.talonfloof.deluge.client.DelugeIrisCompat;
-import sh.talonfloof.deluge.client.DelugeRenderTypes;
-
-import static sh.talonfloof.deluge.client.DelugeClient.clientConfig;
 
 @Mixin(LevelRenderer.class)
 public class LevelRendererMixin {

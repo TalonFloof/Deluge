@@ -8,7 +8,7 @@ import net.minecraft.server.level.ServerPlayer;
 import sh.talonfloof.deluge.Deluge;
 import sh.talonfloof.deluge.DelugeEventType;
 
-public record EventUpdatePacket(DelugeEventType eventType, float rainLevel) implements CustomPacketPayload {
+public record EventUpdatePacket(DelugeEventType eventType, float rainLevel, float thunderLevel) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<EventUpdatePacket> TYPE = new CustomPacketPayload.Type<>(Deluge.path("event_update"));
 
     public static final StreamCodec<ByteBuf, EventUpdatePacket> STREAM_CODEC = StreamCodec.composite(
@@ -16,7 +16,9 @@ public record EventUpdatePacket(DelugeEventType eventType, float rainLevel) impl
             (self) -> self.eventType().ordinal(),
             ByteBufCodecs.FLOAT,
             EventUpdatePacket::rainLevel,
-            (eventType, rainLevel) -> new EventUpdatePacket(DelugeEventType.values()[eventType],rainLevel)
+            ByteBufCodecs.FLOAT,
+            EventUpdatePacket::thunderLevel,
+            (eventType, rainLevel, thunderLevel) -> new EventUpdatePacket(DelugeEventType.values()[eventType],rainLevel,thunderLevel)
     );
 
     @Override
@@ -24,9 +26,9 @@ public record EventUpdatePacket(DelugeEventType eventType, float rainLevel) impl
         return TYPE;
     }
 
-    public static void send(ServerPlayer player, DelugeEventType eventType, float rainLevel) {
+    public static void send(ServerPlayer player, DelugeEventType eventType, float rainLevel, float thunderLevel) {
         if(Deluge.NETWORK.canSend(TYPE.id(), player)) {
-            Deluge.NETWORK.send(new EventUpdatePacket(eventType, rainLevel), player);
+            Deluge.NETWORK.send(new EventUpdatePacket(eventType, rainLevel, thunderLevel), player);
         }
     }
 }
